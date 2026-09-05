@@ -1,0 +1,3 @@
+Command Line: /home/student/snps_tools_target/verdi/U-2023.03-SP1/platform/LINUXAMD64/bin/Novas -ssf dump.fsdb
+uname(Linux vlsi34.vce.ac.in 4.18.0-553.120.1.el8_10.x86_64 #1 SMP Thu Apr 23 10:43:43 UTC 2026 x86_64)
+au time 59.254310 1.965134 0.536832 delta 197931008 197931008 total 769032192 769032192

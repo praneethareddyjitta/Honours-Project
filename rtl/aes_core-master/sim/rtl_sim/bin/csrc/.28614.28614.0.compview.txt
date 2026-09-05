@@ -1,0 +1,9 @@
+{"vcs1":{"timestamp_begin":1788588256.706035959, "rt":4.87, "ut":0.13, "st":0.05}}
+{"vcselab":{"timestamp_begin":1788588261.615094592, "rt":2.60, "ut":0.10, "st":0.03}}
+{"link":{"timestamp_begin":1788588264.236295054, "rt":0.91, "ut":0.05, "st":0.02}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1788588255.524666685}
+{"VCS_COMP_START_TIME": 1788588255.524666685}
+{"VCS_COMP_END_TIME": 1788588265.177916157}
+{"VCS_USER_OPTIONS": "-full64 -sverilog ../../../rtl/verilog/aes_sbox.v ../../../rtl/verilog/aes_rcon.v ../../../rtl/verilog/aes_key_expand_128.v ../../../rtl/verilog/aes_cipher_top.v ../../../rtl/verilog/aes_inv_sbox.v ../../../rtl/verilog/aes_inv_cipher_top.v ../../../bench/verilog/test_bench_top.v +incdir+../../../rtl/verilog/ +incdir+../../../bench/verilog/"}
+{"vcs1": {"peak_mem": 373680}}
+{"vcselab": {"peak_mem": 251812}}

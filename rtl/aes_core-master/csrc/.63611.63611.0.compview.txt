@@ -1,0 +1,5 @@
+{"vcs1":{"timestamp_begin":1788601559.771612869, "rt":0.84, "ut":0.03, "st":0.01}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1788601559.590840738}
+{"VCS_COMP_START_TIME": 1788601559.590840738}
+{"VCS_COMP_END_TIME": 1788601560.630821767}
+{"VCS_USER_OPTIONS": "-full64 -sverilog -debug_access+all -DFSDB -f filelist_portable.f -top axi_aes_tb -o simv"}

@@ -1,0 +1,7 @@
+Command exited with non-zero status 255
+{"vcs1":{"timestamp_begin":1788588912.296149876, "rt":1.32, "ut":0.04, "st":0.01}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1788588912.111531760}
+{"VCS_COMP_START_TIME": 1788588912.111531760}
+{"VCS_COMP_END_TIME": 1788588913.649835109}
+{"VCS_USER_OPTIONS": "-full64 -sverilog ../../../rtl/verilog/aes_sbox.v ../../../rtl/verilog/aes_rcon.v ../../../rtl/verilog/aes_key_expand_128.v ../../../rtl/verilog/aes_cipher_top.v ../../../rtl/verilog/aes_inv_sbox.v ../../../rtl/verilog/aes_inv_cipher_top.v ../../../bench/verilog/test_bench_top.v +incdir+../../../rtl/verilog/ +incdir+../../../bench/verilog/"}
+{"vcs1": {"peak_mem": 356680}}
