@@ -1,0 +1,104 @@
+{
+    "_vcs_DPI_package": [
+        "_vcs_DPI_package",
+        "uM9F1",
+        "module",
+        1
+    ],
+    "vcs_paramclassrepository": [
+        "vcs_paramclassrepository",
+        "hEeZs",
+        "module",
+        2
+    ],
+    "_vcs_unit__1451354869": [
+        "_vcs_unit__1451354869",
+        "j8cZD",
+        "module",
+        3
+    ],
+    "std": [
+        "std",
+        "reYIK",
+        "module",
+        4
+    ],
+    "uvm_pkg": [
+        "uvm_pkg",
+        "zr7M1",
+        "module",
+        5
+    ],
+    "_vcs_msglog": [
+        "_vcs_msglog",
+        "zQBzV",
+        "module",
+        6
+    ],
+    "uvm_custom_install_recording": [
+        "uvm_custom_install_recording",
+        "nhiwz",
+        "module",
+        7
+    ],
+    "uvm_custom_install_verdi_recording": [
+        "uvm_custom_install_verdi_recording",
+        "EbjT3",
+        "module",
+        8
+    ],
+    "axi4_to_axi4lite_uart_adapter_0000": [
+        "axi4_to_axi4lite_uart_adapter_0000",
+        "wIUwh",
+        "module",
+        9
+    ],
+    "arbiter": [
+        "arbiter",
+        "ujx5M",
+        "module",
+        10
+    ],
+    "priority_encoder_0000": [
+        "priority_encoder_0000",
+        "VTikG",
+        "module",
+        11
+    ],
+    "axi_internal_fifo_0000": [
+        "axi_internal_fifo_0000",
+        "Bvfk1",
+        "module",
+        12
+    ],
+    "axi_internal_fifo_0001": [
+        "axi_internal_fifo_0001",
+        "jTQWg",
+        "module",
+        13
+    ],
+    "axi_uart_top_0000": [
+        "axi_uart_top_0000",
+        "x5KIA",
+        "module",
+        14
+    ],
+    "tb_axi4_to_axi4lite_uart_adapter": [
+        "tb_axi4_to_axi4lite_uart_adapter",
+        "r9B0p",
+        "module",
+        15
+    ],
+    "tb_axi_soc_top_smoke": [
+        "tb_axi_soc_top_smoke",
+        "SWBrL",
+        "module",
+        16
+    ],
+    "...MASTER...": [
+        "SIM",
+        "amcQw",
+        "module",
+        17
+    ]
+}
