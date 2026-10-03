@@ -617,7 +617,7 @@
 -P
 -Xufe=2steps
 -debug_access+all
--f uart_soc_filelist_3x10.f
+-f uart_soc_filelist_5x20.f
 -fsdb
 -full64
 -gen_obj
@@ -628,16 +628,15 @@
 -sverilog
 -timescale=1ns/1ps
 /home/student/snps_tools_target/vcs/U-2023.03/linux64/bin/vcs1
-compile.log
+compile_5x20.log
 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/uvm_pkg.sv
 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/vcs/uvm_custom_install_vcs_recorder.sv
 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/verdi/uvm_custom_install_verdi_recorder.sv
 uvm
 /home/student/snps_tools_target/verdi/U-2023.03-SP1/share/PLI/VCS/LINUX64/verdi.tab
-uart_soc_filelist_3x10.f
-88
+uart_soc_filelist_5x20.f
+86
 which_declare=declare -f
-sentaurus_HOME=/home/student/snps_tools_target/sentaurus/T-2022.03-SP2
 no_proxy=localhost,127.0.0.0/8,::1
 XMODIFIERS=@im=ibus
 XDG_VTNR=2
@@ -649,19 +648,16 @@ XDG_RUNTIME_DIR=/run/user/1000
 XDG_MENU_PREFIX=gnome-
 XDG_DATA_DIRS=/home/student/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/
 XDG_CURRENT_DESKTOP=GNOME
-XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.WQLJV3
+XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.UZFZW3
 WAYLAND_DISPLAY=wayland-0
 VTE_VERSION=5204
 VMR_MODE_FLAG=64
-VERDI_LIC=27021@14.139.1.126
 VERDI_HOME=/home/student/snps_tools_target/verdi/U-2023.03-SP1
-VENDOR=unknown
 VCS_UVM_HOME=/home/student/snps_tools_target/vcs/U-2023.03/etc/uvm
 VCS_PATHMAP_PRELOAD_DONE=1
 VCS_MX_HOME_INTERNAL=1
 VCS_MODE_FLAG=64
-VCS_LOG_FILE=compile.log
-VCS_LIC=27021@14.139.1.126
+VCS_LOG_FILE=compile_5x20.log
 VCS_HOME=/home/student/snps_tools_target/vcs/U-2023.03
 VCS_EXEC_DONE=1
 VCS_DEPTH=0
@@ -676,47 +672,39 @@ SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
 SNPS_VERDI_INTERNAL_LP_XML_NEW_FLOW=1
 SNPS_VCS_CLANG_PATH=/home/student/snps_tools_target/vcs/U-2023.03/linux64/clang
 SNPS_INTERNAL_VCS_LINUX_OS=linux
-SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/4015,unix/unix:/tmp/.ICE-unix/4015
+SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/4829,unix/unix:/tmp/.ICE-unix/4829
 SCRNAME=vcs
 SCRIPT_NAME=vcs
 QT_IM_MODULE=ibus
-PRIMETIME_LIC=27021@14.139.1.126
-PRIMETIME=/home/student/snps_tools_target/prime/U-2022.12-SP3
 OVA_UUM=0
-OSTYPE=linux
 NO_PROXY=localhost,127.0.0.0/8,::1
-MODULES_USE_COMPAT_VERSION=0
 MODULES_RUN_QUARANTINE=LD_LIBRARY_PATH LD_PRELOAD
 MODULES_CMD=/usr/share/Modules/libexec/modulecmd.tcl
 MODULESHOME=/usr/share/Modules
 MODULEPATH_modshare=/usr/share/Modules/modulefiles:2:/etc/modulefiles:2:/usr/share/modulefiles:2
-MODULEPATH=/etc/scl/modulefiles:/etc/scl/modulefiles:/etc/scl/modulefiles:/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles
-MANAGERPID=3977
+MODULEPATH=/etc/scl/modulefiles:/etc/scl/modulefiles:/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles
+MANAGERPID=4791
 LOADEDMODULES=
 LESSOPEN=||/usr/bin/lesspipe.sh %s
 LC_ALL=C
-JOURNAL_STREAM=9:52366
-INVOCATION_ID=2fab90d7e5b9449ea6d6d7dd0867ec80
-HOSTTYPE=x86_64-linux
+JOURNAL_STREAM=9:61501
+INVOCATION_ID=71ab896b7b0542adb3839132d5b5e12d
 HISTCONTROL=ignoredups
 GUESTFISH_RESTORE=\e[0m
 GUESTFISH_PS1=\[\e[1;32m\]><fs>\[\e[0;31m\] 
 GUESTFISH_OUTPUT=\e[0m
 GUESTFISH_INIT=\e[1;34m
-GROUP=student
-GNOME_TERMINAL_SERVICE=:1.132
-GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/caa8199d_8ea3_41fa_9f42_bf454c47a5dd
+GNOME_TERMINAL_SERVICE=:1.659
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/a9ecccf3_d80e_44d4_95b4_698f673643fe
 GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+GIT_PAGER=cat
 GDM_LANG=en_IN.UTF-8
 GDMSESSION=gnome
-FINESIM_LIC=27021@14.139.1.126
-FINESIM_HOME=/home/student/snps_tools_target/finesim/U-2023.03
 DESKTOP_SESSION=gnome
-DESIGNCOMPILER=/home/student/snps_tools_target/syn/T-2022.03-SP5
 DEBUGINFOD_URLS=https://debuginfod.centos.org/ 
 DBUS_STARTER_BUS_TYPE=session
-DBUS_STARTER_ADDRESS=unix:path=/run/user/1000/bus,guid=4e853ba341794e931b1d99246aae0eea
-DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus,guid=4e853ba341794e931b1d99246aae0eea
+DBUS_STARTER_ADDRESS=unix:path=/run/user/1000/bus,guid=e3119af03938af4dd04c40446ac0834e
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus,guid=e3119af03938af4dd04c40446ac0834e
 COLORTERM=truecolor
 BASH_FUNC_which%%=() {  ( alias;_ eval ${which_declare} ) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot $@_}
 BASH_FUNC_switchml%%=() {  typeset swfound=1;_ if [ "${MODULES_USE_COMPAT_VERSION:-0}" = '1' ]; then_ typeset swname='main';_ if [ -e /usr/share/Modules/libexec/modulecmd.tcl ]; then_ typeset swfound=0;_ unset MODULES_USE_COMPAT_VERSION;_ fi;_ else_ typeset swname='compatibility';_ if [ -e /usr/share/Modules/libexec/modulecmd-compat ]; then_ typeset swfound=0;_ MODULES_USE_COMPAT_VERSION=1;_ export MODULES_USE_COMPAT_VERSION;_ fi;_ fi;_ if [ $swfound -eq 0 ]; then_ echo "Switching to Modules $swname version";_ source /usr/share/Modules/init/bash;_ else_ echo "Cannot switch to Modules $swname version, command not found";_ return 1;_ fi_}
@@ -724,9 +712,19 @@ BASH_FUNC_scl%%=() {  if [ "$1" = "load" -o "$1" = "unload" ]; then_ eval "modul
 BASH_FUNC_module%%=() {  _module_raw "$@" 2>&1_}
 BASH_FUNC_ml%%=() {  module ml "$@"_}
 BASH_FUNC__module_raw%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}" = '1' ]; then_ case "$-" in _ *v*x*)_ set +vx;_ _mlshdbg='vx'_ ;;_ *v*)_ set +v;_ _mlshdbg='v'_ ;;_ *x*)_ set +x;_ _mlshdbg='x'_ ;;_ *)_ _mlshdbg=''_ ;;_ esac;_ fi;_ unset _mlre _mlIFS;_ if [ -n "${IFS+x}" ]; then_ _mlIFS=$IFS;_ fi;_ IFS=' ';_ for _mlv in ${MODULES_RUN_QUARANTINE:-};_ do_ if [ "${_mlv}" = "${_mlv##*[!A-Za-z0-9_]}" -a "${_mlv}" = "${_mlv#[0-9]}" ]; then_ if [ -n "`eval 'echo ${'$_mlv'+x}'`" ]; then_ _mlre="${_mlre:-}${_mlv}_modquar='`eval 'echo ${'$_mlv'}'`' ";_ fi;_ _mlrv="MODULES_RUNENV_${_mlv}";_ _mlre="${_mlre:-}${_mlv}='`eval 'echo ${'$_mlrv':-}'`' ";_ fi;_ done;_ if [ -n "${_mlre:-}" ]; then_ eval `eval ${_mlre} /usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash '"$@"'`;_ else_ eval `/usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash "$@"`;_ fi;_ _mlstatus=$?;_ if [ -n "${_mlIFS+x}" ]; then_ IFS=$_mlIFS;_ else_ unset IFS;_ fi;_ unset _mlre _mlv _mlrv _mlIFS;_ if [ -n "${_mlshdbg:-}" ]; then_ set -$_mlshdbg;_ fi;_ unset _mlshdbg;_ return $_mlstatus_}
+ANTIGRAVITY_TRAJECTORY_ID=b8584fb9-de3d-4b1d-9f5d-d00156c12634
+ANTIGRAVITY_SOURCE_METADATA={"tool":{"conversationId":"51b5e0e6-fc08-4f0d-b22c-8a1fe4acd16f","stepIndex":292,"toolCall":{"id":"call_1546971","name":"run_command","argumentsJson":"{\"CommandLine\":\"export SNPSLMD_LICENSE_FILE=27021@14.139.1.126\\nexport VCS_HOME=/home/student/snps_tools_target/vcs/U-2023.03\\nexport VERDI_HOME=/home/student/snps_tools_target/verdi/U-2023.03-SP1\\nexport PATH=$VCS_HOME/bin:$VERDI_HOME/bin:$PATH\\nvcs -full64 -sverilog -ntb_opts uvm -timescale=1ns/1ps -debug_access+all -kdb -f uart_soc_filelist_5x20.f -l compile_5x20.log\\n\",\"Cwd\":\"/home/student/Documents/1602-23-735-163/proj-dir/rtl\",\"IsDaemon\":false,\"RequestedTerminalID\":\"\",\"RunPersistent\":false,\"WaitMsBeforeAsync\":10000,\"toolAction\":\"Recompiling testbench with VCS\",\"toolSummary\":\"VCS compilation\"}","thinkingSignature":"EuIBCt8BAWkUfROH/HkBzZT8Xwq3930CeWGtWCj9tenEDgqh62S3jftUT0wuUYoUyep5oeXy9BTEbsDQXLRCUwSumBfnRI6YW8PMAxzYOSg/Tq7icr7jnananrsboOmPje34RcmFTyhmVR3dKpXqM/IsM602UJXGj6Yg1YKy35rKuqgDhYK2AEA3X9vJs+ywdUujHYmO97ONBsCuhWXWRiJyNJOgXQjYIA2C8d6Y1iCp2bqkqmVu8nip2tfnmng1bhZ3UYUK0TR6txocWfmpGrNw74hlYZeUAu8xyuVD7lR0XnUL3g=="}}}
+ANTIGRAVITY_PROJECT_ID=default-cli-project
+ANTIGRAVITY_LS_VERSION=cli-1.2.16
+ANTIGRAVITY_LS_ADDRESS=localhost:41171
+ANTIGRAVITY_CSRF_TOKEN=fcf6c607-22d2-41ef-9f41-f576d02e3180
+ANTIGRAVITY_CONVERSATION_ID=51b5e0e6-fc08-4f0d-b22c-8a1fe4acd16f
+ANTIGRAVITY_APP_DATA_DIR=/home/student/.gemini/antigravity-cli
+ANTIGRAVITY_AGENTAPI_EXE=/home/student/.local/bin/agy
+ANTIGRAVITY_AGENT=1
 0
 0
-171
+170
 1789777398 /home/student/Documents/1602-23-735-163/proj-dir/tb/axi_bfm.vh
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_uart.vh
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_uart_defines.vh
@@ -877,25 +875,24 @@ BASH_FUNC__module_raw%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBU
 1677387028 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/macros/snps_macros.svp
 1677387028 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/macros/uvm_version_defines.svh
 1677387029 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/uvm_macros.svh
-1789808735 /home/student/Documents/1602-23-735-163/proj-dir/tb/tb_axi_soc_top_smoke.v
-1789807223 /home/student/Documents/1602-23-735-163/proj-dir/tb/tb_axi4_to_axi4lite_uart_adapter.v
+1791030369 /home/student/Documents/1602-23-735-163/proj-dir/tb/tb_axi_soc_top_5x20_smoke.v
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/uart_transmitter.v
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/uart_receiver.v
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/uart_parity_bit_compute.v
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/uart_controller.v
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_uart_top.v
-1789807388 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_soc_top.v
+1791028887 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_soc_top_5x20.v
 1685359112 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_internal_fifo.v
 1787991875 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/priority_encoder.v
 1787991873 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/arbiter.v
 1789808111 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/axi_interconnect.v
-1789807683 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/axi_interconnect_wrap_3x10.v
+1791007963 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/axi_interconnect_wrap_5x20.v
 1789806860 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi4_to_axi4lite_uart_adapter.v
 1677387029 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/verdi/uvm_custom_install_verdi_recorder.sv
 1677387029 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/verdi/uvm_custom_install_verdi_recorder.sv
 1677387029 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/vcs/uvm_custom_install_vcs_recorder.sv
 1677387029 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/uvm_pkg.sv
-1789808314 uart_soc_filelist_3x10.f
+1791028741 uart_soc_filelist_5x20.f
 1685268911 /home/student/snps_tools_target/verdi/U-2023.03-SP1/share/PLI/VCS/LINUX64/verdi.tab
 1677384340 /home/student/snps_tools_target/vcs/U-2023.03/linux64/lib/vcsdp_lite.tab
 6
@@ -905,5 +902,5 @@ BASH_FUNC__module_raw%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBU
 1677385060 /home/student/snps_tools_target/vcs/U-2023.03/linux64/lib/liberrorinf.so
 1677385018 /home/student/snps_tools_target/vcs/U-2023.03/linux64/lib/libsnpsmalloc.so
 1677385055 /home/student/snps_tools_target/vcs/U-2023.03/linux64/lib/libvfs.so
-1789808750 simv.daidir
+1791030385 simv.daidir
 -1 partitionlib

@@ -1,5 +1,5 @@
 psSimBaseName                      	simv
-psLogFileName                      	compile.log
+psLogFileName                      	compile_5x20.log
 psDaiDir                           	simv.daidir
 destPath                           	csrc/
 fSharedMasterElab                  	0
@@ -974,7 +974,7 @@ fHsimMxConnFrc                     	0
 fHsimNewForceCbkVec                	0
 fHsimNewForceCbkVecDiag            	0
 fHsimMdbReplaceVpdHighConn         	1
-fHsimVpdHighConnReplaced           	1
+fHsimVpdHighConnReplaced           	0
 fHsimVpdOptSVTypes                 	1
 fHsimDlyInitFrc                    	0
 fHsimPIP                           	0

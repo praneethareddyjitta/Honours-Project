@@ -1,10 +1,10 @@
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/arbiter.v
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/axi_interconnect.v
-/home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/axi_interconnect_wrap_3x10.v
+/home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/axi_interconnect_wrap_5x20.v
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/interconnect/priority_encoder.v
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi4_to_axi4lite_uart_adapter.v
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_internal_fifo.v
-/home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_soc_top.v
+/home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_soc_top_5x20.v
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_uart.vh
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_uart_defines.vh
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/axi_uart_top.v
@@ -13,8 +13,7 @@
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/uart_receiver.v
 /home/student/Documents/1602-23-735-163/proj-dir/rtl/uart/uart_transmitter.v
 /home/student/Documents/1602-23-735-163/proj-dir/tb/axi_bfm.vh
-/home/student/Documents/1602-23-735-163/proj-dir/tb/tb_axi4_to_axi4lite_uart_adapter.v
-/home/student/Documents/1602-23-735-163/proj-dir/tb/tb_axi_soc_top_smoke.v
+/home/student/Documents/1602-23-735-163/proj-dir/tb/tb_axi_soc_top_5x20_smoke.v
 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/base/uvm_barrier.svh
 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/base/uvm_base.svh
 /home/student/snps_tools_target/vcs/U-2023.03/etc/uvm/base/uvm_bottomup_phase.svh
