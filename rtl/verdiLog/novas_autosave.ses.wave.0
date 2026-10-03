@@ -2,7 +2,7 @@ Magic 271485
 Revision Verdi_U-2023.03-SP1
 
 ; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
-viewPort 0 25 900 256 100 65
+viewPort 0 25 1600 326 324 50
 
 ; File list:
 ; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
@@ -16,16 +16,16 @@ signalSpacing 5
 
 ; windowTimeUnit is used for zoom, cursor & marker
 ; waveform viewport range
-zoom 0.000000 425210.000000
-cursor 0.000000
+zoom 0.000000 3615367.231638
+cursor 165000.000000
 marker 0.000000
 
 ; user define markers
 ; userMarker time_pos marker_name color linestyle
 ; visible top row signal index
-top 10
+top 0
 ; marker line index
-markerPos 34
+markerPos 16
 
 ; event list
 ; addEvent event_name event_expression
@@ -47,40 +47,22 @@ curSTATUS ByChange
 
 addGroup "G1"
 activeDirFile "" "/home/student/Documents/1602-23-735-163/proj-dir/rtl/dump.fsdb"
-addSignal -h 15 -UNSIGNED -HEX /tb_axi_soc_top_smoke/s_axi_araddr[31:0]
-addSignal -h 15 -UNSIGNED -HEX -holdScope s_axi_awaddr[31:0]
-addSignal -h 15 -holdScope s_axi_awready
-addSignal -h 15 -holdScope s_axi_awvalid
-addSignal -h 15 -UNSIGNED -HEX -holdScope s_axi_wdata[31:0]
-addSignal -h 15 -holdScope s_axi_wready
-addSignal -h 15 -UNSIGNED -HEX -holdScope s_axi_wstrb[3:0]
-addSignal -h 15 -holdScope s_axi_wvalid
-addSignal -h 15 -holdScope s_axi_bready
-addSignal -h 15 -UNSIGNED -HEX -holdScope s_axi_bresp[1:0]
-addSignal -h 15 -holdScope s_axi_bvalid
-addSignal -h 15 -holdScope s_axi_arready
-addSignal -h 15 -holdScope s_axi_arvalid
-addSignal -h 15 -UNSIGNED -HEX -holdScope s_axi_araddr[31:0]
-addSignal -h 15 -UNSIGNED -HEX -holdScope s_axi_rdata[31:0]
-addSignal -h 15 -holdScope s_axi_rready
-addSignal -h 15 -UNSIGNED -HEX -holdScope s_axi_rresp[1:0]
-addSignal -h 15 -holdScope s_axi_rvalid
-addSignal -h 15 -UNSIGNED -HEX /tb_axi_soc_top_smoke/u_top/u03_awaddr[31:0]
-addSignal -h 15 -holdScope u03_awready
-addSignal -h 15 -holdScope u03_awvalid
-addSignal -h 15 -holdScope u03_bready
-addSignal -h 15 -UNSIGNED -HEX -holdScope u03_bresp[1:0]
-addSignal -h 15 -holdScope u03_bvalid
-addSignal -h 15 -UNSIGNED -HEX -holdScope u03_wdata[31:0]
-addSignal -h 15 -holdScope u03_wready
-addSignal -h 15 -holdScope u03_wvalid
-addSignal -h 15 -UNSIGNED -HEX -holdScope u03_wstrb[3:0]
-addSignal -h 15 -UNSIGNED -HEX -holdScope u03_araddr[31:0]
-addSignal -h 15 -holdScope u03_arready
-addSignal -h 15 -holdScope u03_arvalid
-addSignal -h 15 -UNSIGNED -HEX -holdScope u03_rdata[31:0]
-addSignal -h 15 -holdScope u03_rready
-addSignal -h 15 -holdScope u03_rvalid
+addSignal -h 15 -UNSIGNED -HEX /tb_axi4_to_axi4lite_uart_adapter/uart/axi_awaddr_i[4:0]
+addSignal -h 15 -holdScope axi_awready_o
+addSignal -h 15 -holdScope axi_awvalid_i
+addSignal -h 15 -UNSIGNED -HEX -holdScope axi_wdata_i[31:0]
+addSignal -h 15 -holdScope axi_wready_o
+addSignal -h 15 -holdScope axi_wvalid_i
+addSignal -h 15 -holdScope uart_rx_i
+addSignal -h 15 -holdScope uart_tx_o
+addSignal -h 15 -UNSIGNED -HEX -holdScope axi_araddr_i[4:0]
+addSignal -h 15 -holdScope axi_arready_o
+addSignal -h 15 -holdScope axi_arvalid_i
+addSignal -h 15 -UNSIGNED -HEX -holdScope axi_rdata[31:0]
+addSignal -h 15 -holdScope axi_rready_i
+addSignal -h 15 -holdScope axi_rvalid
+addSignal -h 15 -holdScope axi_aclk_i
+addSignal -h 15 -holdScope axi_wrresp
 addGroup "G2"
 
 ; getSignalForm Scope Hierarchy Status
@@ -93,20 +75,18 @@ getSignalForm close
 "/_vcs_msglog"
 "/tb_axi4_to_axi4lite_uart_adapter"
 "/tb_axi4_to_axi4lite_uart_adapter/uart"
+"/tb_axi4_to_axi4lite_uart_adapter/uart/axi_internal_fifo_rx_inst"
+"/tb_axi4_to_axi4lite_uart_adapter/uart/axi_internal_fifo_tx_inst"
 "/tb_axi4_to_axi4lite_uart_adapter/uart/uart_controller_inst"
-"/tb_axi_soc_top_smoke"
-"/tb_axi_soc_top_smoke/u_top"
 
 SCOPE_LIST_BEGIN
 "/_vcs_msglog"
-"/tb_axi_soc_top_smoke"
-"/tb_axi_soc_top_smoke/u_top"
-"/tb_axi_soc_top_smoke/u_top/u_axi_uart"
-"/tb_axi_soc_top_smoke/u_top/u_interconnect"
-"/tb_axi_soc_top_smoke/u_top/u_axi_uart/uart_controller_inst"
-"/tb_axi_soc_top_smoke/u_top/u_axi_uart/axi_internal_fifo_tx_inst"
 "/tb_axi4_to_axi4lite_uart_adapter"
-"/tb_axi_soc_top_smoke/u_top/u_uart_adapter"
+"/tb_axi4_to_axi4lite_uart_adapter/uart"
+"/tb_axi4_to_axi4lite_uart_adapter/uart/uart_controller_inst/uart_transmitter_inst"
+"/tb_axi4_to_axi4lite_uart_adapter/uart/axi_internal_fifo_tx_inst"
+"/tb_axi4_to_axi4lite_uart_adapter/dut"
+"/tb_axi4_to_axi4lite_uart_adapter/uart/axi_internal_fifo_rx_inst"
 "/tb_axi4_to_axi4lite_uart_adapter/uart/uart_controller_inst"
 SCOPE_LIST_END
 
