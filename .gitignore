@@ -1,0 +1,20 @@
+# Synopsys VCS & Verdi simulation artifacts
+simv*
+*.daidir/
+csrc/
+verdiLog/
+*.fsdb
+*.vcd
+novas.*
+ucli.key
+*.log
+vc_hdrs.h
+verdi_config_file
+
+# Build & temporary files
+*.o
+*.dump
+*.map
+sw/*.o
+sw/*.dump
+sw/*.map

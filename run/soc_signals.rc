@@ -1,0 +1,49 @@
+Magic 271485
+Revision Verdi_U-2023.03-SP1
+
+; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
+viewPort 0 25 1600 850 320 200
+
+; File list:
+openDirFile -d / "" "/home/student/Documents/1602-23-735-163/Honours-Project-main/run/dump_soc_baseline.fsdb"
+
+; signal spacing:
+signalSpacing 5
+
+; windowTimeUnit is used for zoom, cursor & marker
+windowTimeUnit 1us
+
+; waveform viewport range (Full 317 us test run!)
+zoom 0.000000 320000000.000000 1ps
+cursor 6325000.000000
+marker 0.000000
+
+top 0
+markerPos 0
+
+curSTATUS ByChange
+
+addGroup "System (Clock & Reset)"
+activeDirFile "" "/home/student/Documents/1602-23-735-163/Honours-Project-main/run/dump_soc_baseline.fsdb"
+addSignal -h 15 /tb_soc_baseline_c/clk
+addSignal -h 15 -holdScope rst_n
+
+addGroup "VeeR EL2 Processor Core"
+addSignal -h 15 /tb_soc_baseline_c/dut/u_veer_core/trace_rv_i_valid_ip
+addSignal -h 15 -UNSIGNED -HEX -holdScope trace_rv_i_address_ip[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope trace_rv_i_insn_ip[31:0]
+
+addGroup "Instruction Bus (IFU)"
+addSignal -h 15 /tb_soc_baseline_c/dut/ifu_axi_arvalid
+addSignal -h 15 -UNSIGNED -HEX -holdScope ifu_axi_araddr[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope ifu_axi_rdata[63:0]
+
+addGroup "Data Bus (LSU to UART/GPIO)"
+addSignal -h 15 /tb_soc_baseline_c/dut/lsu_axi_awvalid
+addSignal -h 15 -UNSIGNED -HEX -holdScope lsu_axi_awaddr[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope lsu_axi_wdata[63:0]
+
+addGroup "Output Verification"
+addSignal -h 15 /tb_soc_baseline_c/dut/uart_tx
+addSignal -h 15 -UNSIGNED -HEX -holdScope gpio_out[7:0]
+addSignal -h 15 -holdScope pwm_out
