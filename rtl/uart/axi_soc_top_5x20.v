@@ -4,12 +4,16 @@
 // SoC integration top: axi_interconnect_wrap_5x20 (5 slave / 20 master ports)
 //   + axi4_to_axi4lite_uart_adapter on M05
 //   + axi_uart_top (axi-lite_uart-ipcore)
+//   + axi4_to_axil_lite + timer on M06
+//   + axi4_to_axil_lite + gpio on M07
 //
-// All 5 slave ports (S00-S04) and 19 master ports (M00-M04, M06-M19)
+// All 5 slave ports (S00-S04) and 17 master ports (M00-M04, M08-M19)
 // are brought straight out as top-level AXI4 ports for masters and peripherals.
-// M05 is NOT brought out as raw AXI4: it is consumed internally by the UART
-// adapter + UART IP, exposing only the UART pins (uart_rx_i / uart_tx_o /
-// read_interrupt_o) at this level.
+// M05, M06, and M07 are integrated internally:
+//   - M05: UART -> uart_rx_i, uart_tx_o, read_interrupt_o
+//   - M06: TIMER -> sample_tick, irq_timer
+//   - M07: GPIO -> gpio_in, gpio_out, irq_gpio
+// Note: AES is deliberately NOT connected to this 5x20 interconnect.
 //
 // Address map (defaults matching doc/SoC_IP_Registers_Summary.xlsx):
 //   M00: IMEM    0x1000_0000 - 0x1000_FFFF (64KB)
@@ -492,95 +496,8 @@ module axi_soc_top_5x20 #
     input  wire                     m01_axi_rvalid,
     output wire                     m01_axi_rready,
 
-    output wire [ID_WIDTH-1:0]      m02_axi_awid,
-    output wire [ADDR_WIDTH-1:0]    m02_axi_awaddr,
-    output wire [7:0]               m02_axi_awlen,
-    output wire [2:0]               m02_axi_awsize,
-    output wire [1:0]               m02_axi_awburst,
-    output wire                     m02_axi_awlock,
-    output wire [3:0]               m02_axi_awcache,
-    output wire [2:0]               m02_axi_awprot,
-    output wire [3:0]               m02_axi_awqos,
-    output wire [3:0]               m02_axi_awregion,
-    output wire [AWUSER_WIDTH-1:0]  m02_axi_awuser,
-    output wire                     m02_axi_awvalid,
-    input  wire                     m02_axi_awready,
-    output wire [DATA_WIDTH-1:0]    m02_axi_wdata,
-    output wire [STRB_WIDTH-1:0]    m02_axi_wstrb,
-    output wire                     m02_axi_wlast,
-    output wire [WUSER_WIDTH-1:0]   m02_axi_wuser,
-    output wire                     m02_axi_wvalid,
-    input  wire                     m02_axi_wready,
-    input  wire [ID_WIDTH-1:0]      m02_axi_bid,
-    input  wire [1:0]               m02_axi_bresp,
-    input  wire [BUSER_WIDTH-1:0]   m02_axi_buser,
-    input  wire                     m02_axi_bvalid,
-    output wire                     m02_axi_bready,
-    output wire [ID_WIDTH-1:0]      m02_axi_arid,
-    output wire [ADDR_WIDTH-1:0]    m02_axi_araddr,
-    output wire [7:0]               m02_axi_arlen,
-    output wire [2:0]               m02_axi_arsize,
-    output wire [1:0]               m02_axi_arburst,
-    output wire                     m02_axi_arlock,
-    output wire [3:0]               m02_axi_arcache,
-    output wire [2:0]               m02_axi_arprot,
-    output wire [3:0]               m02_axi_arqos,
-    output wire [3:0]               m02_axi_arregion,
-    output wire [ARUSER_WIDTH-1:0]  m02_axi_aruser,
-    output wire                     m02_axi_arvalid,
-    input  wire                     m02_axi_arready,
-    input  wire [ID_WIDTH-1:0]      m02_axi_rid,
-    input  wire [DATA_WIDTH-1:0]    m02_axi_rdata,
-    input  wire [1:0]               m02_axi_rresp,
-    input  wire                     m02_axi_rlast,
-    input  wire [RUSER_WIDTH-1:0]   m02_axi_ruser,
-    input  wire                     m02_axi_rvalid,
-    output wire                     m02_axi_rready,
-
-    output wire [ID_WIDTH-1:0]      m03_axi_awid,
-    output wire [ADDR_WIDTH-1:0]    m03_axi_awaddr,
-    output wire [7:0]               m03_axi_awlen,
-    output wire [2:0]               m03_axi_awsize,
-    output wire [1:0]               m03_axi_awburst,
-    output wire                     m03_axi_awlock,
-    output wire [3:0]               m03_axi_awcache,
-    output wire [2:0]               m03_axi_awprot,
-    output wire [3:0]               m03_axi_awqos,
-    output wire [3:0]               m03_axi_awregion,
-    output wire [AWUSER_WIDTH-1:0]  m03_axi_awuser,
-    output wire                     m03_axi_awvalid,
-    input  wire                     m03_axi_awready,
-    output wire [DATA_WIDTH-1:0]    m03_axi_wdata,
-    output wire [STRB_WIDTH-1:0]    m03_axi_wstrb,
-    output wire                     m03_axi_wlast,
-    output wire [WUSER_WIDTH-1:0]   m03_axi_wuser,
-    output wire                     m03_axi_wvalid,
-    input  wire                     m03_axi_wready,
-    input  wire [ID_WIDTH-1:0]      m03_axi_bid,
-    input  wire [1:0]               m03_axi_bresp,
-    input  wire [BUSER_WIDTH-1:0]   m03_axi_buser,
-    input  wire                     m03_axi_bvalid,
-    output wire                     m03_axi_bready,
-    output wire [ID_WIDTH-1:0]      m03_axi_arid,
-    output wire [ADDR_WIDTH-1:0]    m03_axi_araddr,
-    output wire [7:0]               m03_axi_arlen,
-    output wire [2:0]               m03_axi_arsize,
-    output wire [1:0]               m03_axi_arburst,
-    output wire                     m03_axi_arlock,
-    output wire [3:0]               m03_axi_arcache,
-    output wire [2:0]               m03_axi_arprot,
-    output wire [3:0]               m03_axi_arqos,
-    output wire [3:0]               m03_axi_arregion,
-    output wire [ARUSER_WIDTH-1:0]  m03_axi_aruser,
-    output wire                     m03_axi_arvalid,
-    input  wire                     m03_axi_arready,
-    input  wire [ID_WIDTH-1:0]      m03_axi_rid,
-    input  wire [DATA_WIDTH-1:0]    m03_axi_rdata,
-    input  wire [1:0]               m03_axi_rresp,
-    input  wire                     m03_axi_rlast,
-    input  wire [RUSER_WIDTH-1:0]   m03_axi_ruser,
-    input  wire                     m03_axi_rvalid,
-    output wire                     m03_axi_rready,
+    // Note: M02 (I2C @ 0x4000_0000) and M03 (PWM @ 0x4000_2000) are integrated internally.
+    // Their external bus signals are replaced by peripheral pads below.
 
     output wire [ID_WIDTH-1:0]      m04_axi_awid,
     output wire [ADDR_WIDTH-1:0]    m04_axi_awaddr,
@@ -626,96 +543,6 @@ module axi_soc_top_5x20 #
     input  wire [RUSER_WIDTH-1:0]   m04_axi_ruser,
     input  wire                     m04_axi_rvalid,
     output wire                     m04_axi_rready,
-
-    output wire [ID_WIDTH-1:0]      m06_axi_awid,
-    output wire [ADDR_WIDTH-1:0]    m06_axi_awaddr,
-    output wire [7:0]               m06_axi_awlen,
-    output wire [2:0]               m06_axi_awsize,
-    output wire [1:0]               m06_axi_awburst,
-    output wire                     m06_axi_awlock,
-    output wire [3:0]               m06_axi_awcache,
-    output wire [2:0]               m06_axi_awprot,
-    output wire [3:0]               m06_axi_awqos,
-    output wire [3:0]               m06_axi_awregion,
-    output wire [AWUSER_WIDTH-1:0]  m06_axi_awuser,
-    output wire                     m06_axi_awvalid,
-    input  wire                     m06_axi_awready,
-    output wire [DATA_WIDTH-1:0]    m06_axi_wdata,
-    output wire [STRB_WIDTH-1:0]    m06_axi_wstrb,
-    output wire                     m06_axi_wlast,
-    output wire [WUSER_WIDTH-1:0]   m06_axi_wuser,
-    output wire                     m06_axi_wvalid,
-    input  wire                     m06_axi_wready,
-    input  wire [ID_WIDTH-1:0]      m06_axi_bid,
-    input  wire [1:0]               m06_axi_bresp,
-    input  wire [BUSER_WIDTH-1:0]   m06_axi_buser,
-    input  wire                     m06_axi_bvalid,
-    output wire                     m06_axi_bready,
-    output wire [ID_WIDTH-1:0]      m06_axi_arid,
-    output wire [ADDR_WIDTH-1:0]    m06_axi_araddr,
-    output wire [7:0]               m06_axi_arlen,
-    output wire [2:0]               m06_axi_arsize,
-    output wire [1:0]               m06_axi_arburst,
-    output wire                     m06_axi_arlock,
-    output wire [3:0]               m06_axi_arcache,
-    output wire [2:0]               m06_axi_arprot,
-    output wire [3:0]               m06_axi_arqos,
-    output wire [3:0]               m06_axi_arregion,
-    output wire [ARUSER_WIDTH-1:0]  m06_axi_aruser,
-    output wire                     m06_axi_arvalid,
-    input  wire                     m06_axi_arready,
-    input  wire [ID_WIDTH-1:0]      m06_axi_rid,
-    input  wire [DATA_WIDTH-1:0]    m06_axi_rdata,
-    input  wire [1:0]               m06_axi_rresp,
-    input  wire                     m06_axi_rlast,
-    input  wire [RUSER_WIDTH-1:0]   m06_axi_ruser,
-    input  wire                     m06_axi_rvalid,
-    output wire                     m06_axi_rready,
-
-    output wire [ID_WIDTH-1:0]      m07_axi_awid,
-    output wire [ADDR_WIDTH-1:0]    m07_axi_awaddr,
-    output wire [7:0]               m07_axi_awlen,
-    output wire [2:0]               m07_axi_awsize,
-    output wire [1:0]               m07_axi_awburst,
-    output wire                     m07_axi_awlock,
-    output wire [3:0]               m07_axi_awcache,
-    output wire [2:0]               m07_axi_awprot,
-    output wire [3:0]               m07_axi_awqos,
-    output wire [3:0]               m07_axi_awregion,
-    output wire [AWUSER_WIDTH-1:0]  m07_axi_awuser,
-    output wire                     m07_axi_awvalid,
-    input  wire                     m07_axi_awready,
-    output wire [DATA_WIDTH-1:0]    m07_axi_wdata,
-    output wire [STRB_WIDTH-1:0]    m07_axi_wstrb,
-    output wire                     m07_axi_wlast,
-    output wire [WUSER_WIDTH-1:0]   m07_axi_wuser,
-    output wire                     m07_axi_wvalid,
-    input  wire                     m07_axi_wready,
-    input  wire [ID_WIDTH-1:0]      m07_axi_bid,
-    input  wire [1:0]               m07_axi_bresp,
-    input  wire [BUSER_WIDTH-1:0]   m07_axi_buser,
-    input  wire                     m07_axi_bvalid,
-    output wire                     m07_axi_bready,
-    output wire [ID_WIDTH-1:0]      m07_axi_arid,
-    output wire [ADDR_WIDTH-1:0]    m07_axi_araddr,
-    output wire [7:0]               m07_axi_arlen,
-    output wire [2:0]               m07_axi_arsize,
-    output wire [1:0]               m07_axi_arburst,
-    output wire                     m07_axi_arlock,
-    output wire [3:0]               m07_axi_arcache,
-    output wire [2:0]               m07_axi_arprot,
-    output wire [3:0]               m07_axi_arqos,
-    output wire [3:0]               m07_axi_arregion,
-    output wire [ARUSER_WIDTH-1:0]  m07_axi_aruser,
-    output wire                     m07_axi_arvalid,
-    input  wire                     m07_axi_arready,
-    input  wire [ID_WIDTH-1:0]      m07_axi_rid,
-    input  wire [DATA_WIDTH-1:0]    m07_axi_rdata,
-    input  wire [1:0]               m07_axi_rresp,
-    input  wire                     m07_axi_rlast,
-    input  wire [RUSER_WIDTH-1:0]   m07_axi_ruser,
-    input  wire                     m07_axi_rvalid,
-    output wire                     m07_axi_rready,
 
     output wire [ID_WIDTH-1:0]      m08_axi_awid,
     output wire [ADDR_WIDTH-1:0]    m08_axi_awaddr,
@@ -1258,12 +1085,131 @@ module axi_soc_top_5x20 #
     output wire                     m19_axi_rready,
 
     // ------------------------------------------------------------------
-    // UART pins (M05 -> adapter -> axi_uart_top)
+    // Integrated Peripheral Boundary Pins
     // ------------------------------------------------------------------
+    // I2C (M02 @ 0x4000_0000)
+    input  wire                      scl_pad_i,
+    output wire                      scl_pad_o,
+    output wire                      scl_padoen_o,
+    input  wire                      sda_pad_i,
+    output wire                      sda_pad_o,
+    output wire                      sda_padoen_o,
+    output wire                      irq_i2c,
+
+    // PWM (M03 @ 0x4000_2000)
+    output wire [3:0]                pwm_out,
+    output wire                      irq_pwm,
+
+    // UART (M05 @ 0x4000_6000)
     input  wire                      uart_rx_i,
     output wire                      uart_tx_o,
-    output wire                      read_interrupt_o
+    output wire                      read_interrupt_o,
+
+    // Timer (M06 @ 0x4000_8000)
+    output wire                      sample_tick,
+    output wire                      irq_timer,
+
+    // GPIO (M07 @ 0x4000_A000)
+    input  wire [7:0]                gpio_in,
+    output wire [7:0]                gpio_out,
+    output wire                      irq_gpio
 );
+
+// ---------------------------------------------------------------------------
+// Internal wiring: interconnect M02 <-> I2C Bridge <-> i2c_master_top
+// ---------------------------------------------------------------------------
+wire [ID_WIDTH-1:0]      u02_awid;
+wire [ADDR_WIDTH-1:0]    u02_awaddr;
+wire [7:0]               u02_awlen;
+wire [2:0]               u02_awsize;
+wire [1:0]               u02_awburst;
+wire                     u02_awlock;
+wire [3:0]               u02_awcache;
+wire [2:0]               u02_awprot;
+wire [3:0]               u02_awqos;
+wire [3:0]               u02_awregion;
+wire [AWUSER_WIDTH-1:0]  u02_awuser;
+wire                     u02_awvalid;
+wire                     u02_awready;
+wire [DATA_WIDTH-1:0]    u02_wdata;
+wire [STRB_WIDTH-1:0]    u02_wstrb;
+wire                     u02_wlast;
+wire [WUSER_WIDTH-1:0]   u02_wuser;
+wire                     u02_wvalid;
+wire                     u02_wready;
+wire [ID_WIDTH-1:0]      u02_bid;
+wire [1:0]               u02_bresp;
+wire [BUSER_WIDTH-1:0]   u02_buser;
+wire                     u02_bvalid;
+wire                     u02_bready;
+wire [ID_WIDTH-1:0]      u02_arid;
+wire [ADDR_WIDTH-1:0]    u02_araddr;
+wire [7:0]               u02_arlen;
+wire [2:0]               u02_arsize;
+wire [1:0]               u02_arburst;
+wire                     u02_arlock;
+wire [3:0]               u02_arcache;
+wire [2:0]               u02_arprot;
+wire [3:0]               u02_arqos;
+wire [3:0]               u02_arregion;
+wire [ARUSER_WIDTH-1:0]  u02_aruser;
+wire                     u02_arvalid;
+wire                     u02_arready;
+wire [ID_WIDTH-1:0]      u02_rid;
+wire [DATA_WIDTH-1:0]    u02_rdata;
+wire [1:0]               u02_rresp;
+wire                     u02_rlast;
+wire [RUSER_WIDTH-1:0]   u02_ruser;
+wire                     u02_rvalid;
+wire                     u02_rready;
+
+// ---------------------------------------------------------------------------
+// Internal wiring: interconnect M03 <-> PWM Bridge <-> pwm
+// ---------------------------------------------------------------------------
+wire [ID_WIDTH-1:0]      u03_awid;
+wire [ADDR_WIDTH-1:0]    u03_awaddr;
+wire [7:0]               u03_awlen;
+wire [2:0]               u03_awsize;
+wire [1:0]               u03_awburst;
+wire                     u03_awlock;
+wire [3:0]               u03_awcache;
+wire [2:0]               u03_awprot;
+wire [3:0]               u03_awqos;
+wire [3:0]               u03_awregion;
+wire [AWUSER_WIDTH-1:0]  u03_awuser;
+wire                     u03_awvalid;
+wire                     u03_awready;
+wire [DATA_WIDTH-1:0]    u03_wdata;
+wire [STRB_WIDTH-1:0]    u03_wstrb;
+wire                     u03_wlast;
+wire [WUSER_WIDTH-1:0]   u03_wuser;
+wire                     u03_wvalid;
+wire                     u03_wready;
+wire [ID_WIDTH-1:0]      u03_bid;
+wire [1:0]               u03_bresp;
+wire [BUSER_WIDTH-1:0]   u03_buser;
+wire                     u03_bvalid;
+wire                     u03_bready;
+wire [ID_WIDTH-1:0]      u03_arid;
+wire [ADDR_WIDTH-1:0]    u03_araddr;
+wire [7:0]               u03_arlen;
+wire [2:0]               u03_arsize;
+wire [1:0]               u03_arburst;
+wire                     u03_arlock;
+wire [3:0]               u03_arcache;
+wire [2:0]               u03_arprot;
+wire [3:0]               u03_arqos;
+wire [3:0]               u03_arregion;
+wire [ARUSER_WIDTH-1:0]  u03_aruser;
+wire                     u03_arvalid;
+wire                     u03_arready;
+wire [ID_WIDTH-1:0]      u03_rid;
+wire [DATA_WIDTH-1:0]    u03_rdata;
+wire [1:0]               u03_rresp;
+wire                     u03_rlast;
+wire [RUSER_WIDTH-1:0]   u03_ruser;
+wire                     u03_rvalid;
+wire                     u03_rready;
 
 // ---------------------------------------------------------------------------
 // Internal wiring: interconnect M05 <-> UART adapter <-> axi_uart_top
@@ -1314,6 +1260,102 @@ wire                     u05_rvalid;
 wire                     u05_rready;
 
 // ---------------------------------------------------------------------------
+// Internal wiring: interconnect M06 <-> Timer Bridge <-> timer
+// ---------------------------------------------------------------------------
+wire [ID_WIDTH-1:0]      u06_awid;
+wire [ADDR_WIDTH-1:0]    u06_awaddr;
+wire [7:0]               u06_awlen;
+wire [2:0]               u06_awsize;
+wire [1:0]               u06_awburst;
+wire                     u06_awlock;
+wire [3:0]               u06_awcache;
+wire [2:0]               u06_awprot;
+wire [3:0]               u06_awqos;
+wire [3:0]               u06_awregion;
+wire [AWUSER_WIDTH-1:0]  u06_awuser;
+wire                     u06_awvalid;
+wire                     u06_awready;
+wire [DATA_WIDTH-1:0]    u06_wdata;
+wire [STRB_WIDTH-1:0]    u06_wstrb;
+wire                     u06_wlast;
+wire [WUSER_WIDTH-1:0]   u06_wuser;
+wire                     u06_wvalid;
+wire                     u06_wready;
+wire [ID_WIDTH-1:0]      u06_bid;
+wire [1:0]               u06_bresp;
+wire [BUSER_WIDTH-1:0]   u06_buser;
+wire                     u06_bvalid;
+wire                     u06_bready;
+wire [ID_WIDTH-1:0]      u06_arid;
+wire [ADDR_WIDTH-1:0]    u06_araddr;
+wire [7:0]               u06_arlen;
+wire [2:0]               u06_arsize;
+wire [1:0]               u06_arburst;
+wire                     u06_arlock;
+wire [3:0]               u06_arcache;
+wire [2:0]               u06_arprot;
+wire [3:0]               u06_arqos;
+wire [3:0]               u06_arregion;
+wire [ARUSER_WIDTH-1:0]  u06_aruser;
+wire                     u06_arvalid;
+wire                     u06_arready;
+wire [ID_WIDTH-1:0]      u06_rid;
+wire [DATA_WIDTH-1:0]    u06_rdata;
+wire [1:0]               u06_rresp;
+wire                     u06_rlast;
+wire [RUSER_WIDTH-1:0]   u06_ruser;
+wire                     u06_rvalid;
+wire                     u06_rready;
+
+// ---------------------------------------------------------------------------
+// Internal wiring: interconnect M07 <-> GPIO Bridge <-> gpio
+// ---------------------------------------------------------------------------
+wire [ID_WIDTH-1:0]      u07_awid;
+wire [ADDR_WIDTH-1:0]    u07_awaddr;
+wire [7:0]               u07_awlen;
+wire [2:0]               u07_awsize;
+wire [1:0]               u07_awburst;
+wire                     u07_awlock;
+wire [3:0]               u07_awcache;
+wire [2:0]               u07_awprot;
+wire [3:0]               u07_awqos;
+wire [3:0]               u07_awregion;
+wire [AWUSER_WIDTH-1:0]  u07_awuser;
+wire                     u07_awvalid;
+wire                     u07_awready;
+wire [DATA_WIDTH-1:0]    u07_wdata;
+wire [STRB_WIDTH-1:0]    u07_wstrb;
+wire                     u07_wlast;
+wire [WUSER_WIDTH-1:0]   u07_wuser;
+wire                     u07_wvalid;
+wire                     u07_wready;
+wire [ID_WIDTH-1:0]      u07_bid;
+wire [1:0]               u07_bresp;
+wire [BUSER_WIDTH-1:0]   u07_buser;
+wire                     u07_bvalid;
+wire                     u07_bready;
+wire [ID_WIDTH-1:0]      u07_arid;
+wire [ADDR_WIDTH-1:0]    u07_araddr;
+wire [7:0]               u07_arlen;
+wire [2:0]               u07_arsize;
+wire [1:0]               u07_arburst;
+wire                     u07_arlock;
+wire [3:0]               u07_arcache;
+wire [2:0]               u07_arprot;
+wire [3:0]               u07_arqos;
+wire [3:0]               u07_arregion;
+wire [ARUSER_WIDTH-1:0]  u07_aruser;
+wire                     u07_arvalid;
+wire                     u07_arready;
+wire [ID_WIDTH-1:0]      u07_rid;
+wire [DATA_WIDTH-1:0]    u07_rdata;
+wire [1:0]               u07_rresp;
+wire                     u07_rlast;
+wire [RUSER_WIDTH-1:0]   u07_ruser;
+wire                     u07_rvalid;
+wire                     u07_rready;
+
+// ---------------------------------------------------------------------------
 // Adapter <-> UART wiring (AXI4-Lite)
 // ---------------------------------------------------------------------------
 wire                       uart_aresetn;
@@ -1325,6 +1367,28 @@ wire [1:0]                 ul_bresp, ul_rresp;
 wire                       ul_awvalid, ul_awready, ul_wvalid, ul_wready,
                            ul_bvalid, ul_bready, ul_arvalid, ul_arready,
                            ul_rvalid, ul_rready;
+
+// ---------------------------------------------------------------------------
+// Timer AXI4-Lite wiring
+// ---------------------------------------------------------------------------
+wire [ADDR_WIDTH-1:0]      timer_axil_awaddr, timer_axil_araddr;
+wire [DATA_WIDTH-1:0]      timer_axil_wdata,  timer_axil_rdata;
+wire [STRB_WIDTH-1:0]      timer_axil_wstrb;
+wire [1:0]                 timer_axil_bresp,  timer_axil_rresp;
+wire                       timer_axil_awvalid, timer_axil_awready, timer_axil_wvalid, timer_axil_wready;
+wire                       timer_axil_bvalid,  timer_axil_bready,  timer_axil_arvalid, timer_axil_arready;
+wire                       timer_axil_rvalid,  timer_axil_rready;
+
+// ---------------------------------------------------------------------------
+// GPIO AXI4-Lite wiring
+// ---------------------------------------------------------------------------
+wire [ADDR_WIDTH-1:0]      gpio_axil_awaddr, gpio_axil_araddr;
+wire [DATA_WIDTH-1:0]      gpio_axil_wdata,  gpio_axil_rdata;
+wire [STRB_WIDTH-1:0]      gpio_axil_wstrb;
+wire [1:0]                 gpio_axil_bresp,  gpio_axil_rresp;
+wire                       gpio_axil_awvalid, gpio_axil_awready, gpio_axil_wvalid, gpio_axil_wready;
+wire                       gpio_axil_bvalid,  gpio_axil_bready,  gpio_axil_arvalid, gpio_axil_arready;
+wire                       gpio_axil_rvalid,  gpio_axil_rready;
 
 // ---------------------------------------------------------------------------
 // Interconnect (S00-S04, M00-M19; M05 routed to u05_*)
@@ -1690,95 +1754,95 @@ axi_interconnect_wrap_5x20 #(
     .m01_axi_rvalid(m01_axi_rvalid),
     .m01_axi_rready(m01_axi_rready),
 
-    .m02_axi_awid(m02_axi_awid),
-    .m02_axi_awaddr(m02_axi_awaddr),
-    .m02_axi_awlen(m02_axi_awlen),
-    .m02_axi_awsize(m02_axi_awsize),
-    .m02_axi_awburst(m02_axi_awburst),
-    .m02_axi_awlock(m02_axi_awlock),
-    .m02_axi_awcache(m02_axi_awcache),
-    .m02_axi_awprot(m02_axi_awprot),
-    .m02_axi_awqos(m02_axi_awqos),
-    .m02_axi_awregion(m02_axi_awregion),
-    .m02_axi_awuser(m02_axi_awuser),
-    .m02_axi_awvalid(m02_axi_awvalid),
-    .m02_axi_awready(m02_axi_awready),
-    .m02_axi_wdata(m02_axi_wdata),
-    .m02_axi_wstrb(m02_axi_wstrb),
-    .m02_axi_wlast(m02_axi_wlast),
-    .m02_axi_wuser(m02_axi_wuser),
-    .m02_axi_wvalid(m02_axi_wvalid),
-    .m02_axi_wready(m02_axi_wready),
-    .m02_axi_bid(m02_axi_bid),
-    .m02_axi_bresp(m02_axi_bresp),
-    .m02_axi_buser(m02_axi_buser),
-    .m02_axi_bvalid(m02_axi_bvalid),
-    .m02_axi_bready(m02_axi_bready),
-    .m02_axi_arid(m02_axi_arid),
-    .m02_axi_araddr(m02_axi_araddr),
-    .m02_axi_arlen(m02_axi_arlen),
-    .m02_axi_arsize(m02_axi_arsize),
-    .m02_axi_arburst(m02_axi_arburst),
-    .m02_axi_arlock(m02_axi_arlock),
-    .m02_axi_arcache(m02_axi_arcache),
-    .m02_axi_arprot(m02_axi_arprot),
-    .m02_axi_arqos(m02_axi_arqos),
-    .m02_axi_arregion(m02_axi_arregion),
-    .m02_axi_aruser(m02_axi_aruser),
-    .m02_axi_arvalid(m02_axi_arvalid),
-    .m02_axi_arready(m02_axi_arready),
-    .m02_axi_rid(m02_axi_rid),
-    .m02_axi_rdata(m02_axi_rdata),
-    .m02_axi_rresp(m02_axi_rresp),
-    .m02_axi_rlast(m02_axi_rlast),
-    .m02_axi_ruser(m02_axi_ruser),
-    .m02_axi_rvalid(m02_axi_rvalid),
-    .m02_axi_rready(m02_axi_rready),
+    .m02_axi_awid(u02_awid),
+    .m02_axi_awaddr(u02_awaddr),
+    .m02_axi_awlen(u02_awlen),
+    .m02_axi_awsize(u02_awsize),
+    .m02_axi_awburst(u02_awburst),
+    .m02_axi_awlock(u02_awlock),
+    .m02_axi_awcache(u02_awcache),
+    .m02_axi_awprot(u02_awprot),
+    .m02_axi_awqos(u02_awqos),
+    .m02_axi_awregion(u02_awregion),
+    .m02_axi_awuser(u02_awuser),
+    .m02_axi_awvalid(u02_awvalid),
+    .m02_axi_awready(u02_awready),
+    .m02_axi_wdata(u02_wdata),
+    .m02_axi_wstrb(u02_wstrb),
+    .m02_axi_wlast(u02_wlast),
+    .m02_axi_wuser(u02_wuser),
+    .m02_axi_wvalid(u02_wvalid),
+    .m02_axi_wready(u02_wready),
+    .m02_axi_bid(u02_bid),
+    .m02_axi_bresp(u02_bresp),
+    .m02_axi_buser(u02_buser),
+    .m02_axi_bvalid(u02_bvalid),
+    .m02_axi_bready(u02_bready),
+    .m02_axi_arid(u02_arid),
+    .m02_axi_araddr(u02_araddr),
+    .m02_axi_arlen(u02_arlen),
+    .m02_axi_arsize(u02_arsize),
+    .m02_axi_arburst(u02_arburst),
+    .m02_axi_arlock(u02_arlock),
+    .m02_axi_arcache(u02_arcache),
+    .m02_axi_arprot(u02_arprot),
+    .m02_axi_arqos(u02_arqos),
+    .m02_axi_arregion(u02_arregion),
+    .m02_axi_aruser(u02_aruser),
+    .m02_axi_arvalid(u02_arvalid),
+    .m02_axi_arready(u02_arready),
+    .m02_axi_rid(u02_rid),
+    .m02_axi_rdata(u02_rdata),
+    .m02_axi_rresp(u02_rresp),
+    .m02_axi_rlast(u02_rlast),
+    .m02_axi_ruser(u02_ruser),
+    .m02_axi_rvalid(u02_rvalid),
+    .m02_axi_rready(u02_rready),
 
-    .m03_axi_awid(m03_axi_awid),
-    .m03_axi_awaddr(m03_axi_awaddr),
-    .m03_axi_awlen(m03_axi_awlen),
-    .m03_axi_awsize(m03_axi_awsize),
-    .m03_axi_awburst(m03_axi_awburst),
-    .m03_axi_awlock(m03_axi_awlock),
-    .m03_axi_awcache(m03_axi_awcache),
-    .m03_axi_awprot(m03_axi_awprot),
-    .m03_axi_awqos(m03_axi_awqos),
-    .m03_axi_awregion(m03_axi_awregion),
-    .m03_axi_awuser(m03_axi_awuser),
-    .m03_axi_awvalid(m03_axi_awvalid),
-    .m03_axi_awready(m03_axi_awready),
-    .m03_axi_wdata(m03_axi_wdata),
-    .m03_axi_wstrb(m03_axi_wstrb),
-    .m03_axi_wlast(m03_axi_wlast),
-    .m03_axi_wuser(m03_axi_wuser),
-    .m03_axi_wvalid(m03_axi_wvalid),
-    .m03_axi_wready(m03_axi_wready),
-    .m03_axi_bid(m03_axi_bid),
-    .m03_axi_bresp(m03_axi_bresp),
-    .m03_axi_buser(m03_axi_buser),
-    .m03_axi_bvalid(m03_axi_bvalid),
-    .m03_axi_bready(m03_axi_bready),
-    .m03_axi_arid(m03_axi_arid),
-    .m03_axi_araddr(m03_axi_araddr),
-    .m03_axi_arlen(m03_axi_arlen),
-    .m03_axi_arsize(m03_axi_arsize),
-    .m03_axi_arburst(m03_axi_arburst),
-    .m03_axi_arlock(m03_axi_arlock),
-    .m03_axi_arcache(m03_axi_arcache),
-    .m03_axi_arprot(m03_axi_arprot),
-    .m03_axi_arqos(m03_axi_arqos),
-    .m03_axi_arregion(m03_axi_arregion),
-    .m03_axi_aruser(m03_axi_aruser),
-    .m03_axi_arvalid(m03_axi_arvalid),
-    .m03_axi_arready(m03_axi_arready),
-    .m03_axi_rid(m03_axi_rid),
-    .m03_axi_rdata(m03_axi_rdata),
-    .m03_axi_rresp(m03_axi_rresp),
-    .m03_axi_rlast(m03_axi_rlast),
-    .m03_axi_ruser(m03_axi_ruser),
-    .m03_axi_rvalid(m03_axi_rvalid),
-    .m03_axi_rready(m03_axi_rready),
+    .m03_axi_awid(u03_awid),
+    .m03_axi_awaddr(u03_awaddr),
+    .m03_axi_awlen(u03_awlen),
+    .m03_axi_awsize(u03_awsize),
+    .m03_axi_awburst(u03_awburst),
+    .m03_axi_awlock(u03_awlock),
+    .m03_axi_awcache(u03_awcache),
+    .m03_axi_awprot(u03_awprot),
+    .m03_axi_awqos(u03_awqos),
+    .m03_axi_awregion(u03_awregion),
+    .m03_axi_awuser(u03_awuser),
+    .m03_axi_awvalid(u03_awvalid),
+    .m03_axi_awready(u03_awready),
+    .m03_axi_wdata(u03_wdata),
+    .m03_axi_wstrb(u03_wstrb),
+    .m03_axi_wlast(u03_wlast),
+    .m03_axi_wuser(u03_wuser),
+    .m03_axi_wvalid(u03_wvalid),
+    .m03_axi_wready(u03_wready),
+    .m03_axi_bid(u03_bid),
+    .m03_axi_bresp(u03_bresp),
+    .m03_axi_buser(u03_buser),
+    .m03_axi_bvalid(u03_bvalid),
+    .m03_axi_bready(u03_bready),
+    .m03_axi_arid(u03_arid),
+    .m03_axi_araddr(u03_araddr),
+    .m03_axi_arlen(u03_arlen),
+    .m03_axi_arsize(u03_arsize),
+    .m03_axi_arburst(u03_arburst),
+    .m03_axi_arlock(u03_arlock),
+    .m03_axi_arcache(u03_arcache),
+    .m03_axi_arprot(u03_arprot),
+    .m03_axi_arqos(u03_arqos),
+    .m03_axi_arregion(u03_arregion),
+    .m03_axi_aruser(u03_aruser),
+    .m03_axi_arvalid(u03_arvalid),
+    .m03_axi_arready(u03_arready),
+    .m03_axi_rid(u03_rid),
+    .m03_axi_rdata(u03_rdata),
+    .m03_axi_rresp(u03_rresp),
+    .m03_axi_rlast(u03_rlast),
+    .m03_axi_ruser(u03_ruser),
+    .m03_axi_rvalid(u03_rvalid),
+    .m03_axi_rready(u03_rready),
 
     .m04_axi_awid(m04_axi_awid),
     .m04_axi_awaddr(m04_axi_awaddr),
@@ -1870,95 +1934,95 @@ axi_interconnect_wrap_5x20 #(
     .m05_axi_rvalid(u05_rvalid),
     .m05_axi_rready(u05_rready),
 
-    .m06_axi_awid(m06_axi_awid),
-    .m06_axi_awaddr(m06_axi_awaddr),
-    .m06_axi_awlen(m06_axi_awlen),
-    .m06_axi_awsize(m06_axi_awsize),
-    .m06_axi_awburst(m06_axi_awburst),
-    .m06_axi_awlock(m06_axi_awlock),
-    .m06_axi_awcache(m06_axi_awcache),
-    .m06_axi_awprot(m06_axi_awprot),
-    .m06_axi_awqos(m06_axi_awqos),
-    .m06_axi_awregion(m06_axi_awregion),
-    .m06_axi_awuser(m06_axi_awuser),
-    .m06_axi_awvalid(m06_axi_awvalid),
-    .m06_axi_awready(m06_axi_awready),
-    .m06_axi_wdata(m06_axi_wdata),
-    .m06_axi_wstrb(m06_axi_wstrb),
-    .m06_axi_wlast(m06_axi_wlast),
-    .m06_axi_wuser(m06_axi_wuser),
-    .m06_axi_wvalid(m06_axi_wvalid),
-    .m06_axi_wready(m06_axi_wready),
-    .m06_axi_bid(m06_axi_bid),
-    .m06_axi_bresp(m06_axi_bresp),
-    .m06_axi_buser(m06_axi_buser),
-    .m06_axi_bvalid(m06_axi_bvalid),
-    .m06_axi_bready(m06_axi_bready),
-    .m06_axi_arid(m06_axi_arid),
-    .m06_axi_araddr(m06_axi_araddr),
-    .m06_axi_arlen(m06_axi_arlen),
-    .m06_axi_arsize(m06_axi_arsize),
-    .m06_axi_arburst(m06_axi_arburst),
-    .m06_axi_arlock(m06_axi_arlock),
-    .m06_axi_arcache(m06_axi_arcache),
-    .m06_axi_arprot(m06_axi_arprot),
-    .m06_axi_arqos(m06_axi_arqos),
-    .m06_axi_arregion(m06_axi_arregion),
-    .m06_axi_aruser(m06_axi_aruser),
-    .m06_axi_arvalid(m06_axi_arvalid),
-    .m06_axi_arready(m06_axi_arready),
-    .m06_axi_rid(m06_axi_rid),
-    .m06_axi_rdata(m06_axi_rdata),
-    .m06_axi_rresp(m06_axi_rresp),
-    .m06_axi_rlast(m06_axi_rlast),
-    .m06_axi_ruser(m06_axi_ruser),
-    .m06_axi_rvalid(m06_axi_rvalid),
-    .m06_axi_rready(m06_axi_rready),
+    .m06_axi_awid(u06_awid),
+    .m06_axi_awaddr(u06_awaddr),
+    .m06_axi_awlen(u06_awlen),
+    .m06_axi_awsize(u06_awsize),
+    .m06_axi_awburst(u06_awburst),
+    .m06_axi_awlock(u06_awlock),
+    .m06_axi_awcache(u06_awcache),
+    .m06_axi_awprot(u06_awprot),
+    .m06_axi_awqos(u06_awqos),
+    .m06_axi_awregion(u06_awregion),
+    .m06_axi_awuser(u06_awuser),
+    .m06_axi_awvalid(u06_awvalid),
+    .m06_axi_awready(u06_awready),
+    .m06_axi_wdata(u06_wdata),
+    .m06_axi_wstrb(u06_wstrb),
+    .m06_axi_wlast(u06_wlast),
+    .m06_axi_wuser(u06_wuser),
+    .m06_axi_wvalid(u06_wvalid),
+    .m06_axi_wready(u06_wready),
+    .m06_axi_bid(u06_bid),
+    .m06_axi_bresp(u06_bresp),
+    .m06_axi_buser(u06_buser),
+    .m06_axi_bvalid(u06_bvalid),
+    .m06_axi_bready(u06_bready),
+    .m06_axi_arid(u06_arid),
+    .m06_axi_araddr(u06_araddr),
+    .m06_axi_arlen(u06_arlen),
+    .m06_axi_arsize(u06_arsize),
+    .m06_axi_arburst(u06_arburst),
+    .m06_axi_arlock(u06_arlock),
+    .m06_axi_arcache(u06_arcache),
+    .m06_axi_arprot(u06_arprot),
+    .m06_axi_arqos(u06_arqos),
+    .m06_axi_arregion(u06_arregion),
+    .m06_axi_aruser(u06_aruser),
+    .m06_axi_arvalid(u06_arvalid),
+    .m06_axi_arready(u06_arready),
+    .m06_axi_rid(u06_rid),
+    .m06_axi_rdata(u06_rdata),
+    .m06_axi_rresp(u06_rresp),
+    .m06_axi_rlast(u06_rlast),
+    .m06_axi_ruser(u06_ruser),
+    .m06_axi_rvalid(u06_rvalid),
+    .m06_axi_rready(u06_rready),
 
-    .m07_axi_awid(m07_axi_awid),
-    .m07_axi_awaddr(m07_axi_awaddr),
-    .m07_axi_awlen(m07_axi_awlen),
-    .m07_axi_awsize(m07_axi_awsize),
-    .m07_axi_awburst(m07_axi_awburst),
-    .m07_axi_awlock(m07_axi_awlock),
-    .m07_axi_awcache(m07_axi_awcache),
-    .m07_axi_awprot(m07_axi_awprot),
-    .m07_axi_awqos(m07_axi_awqos),
-    .m07_axi_awregion(m07_axi_awregion),
-    .m07_axi_awuser(m07_axi_awuser),
-    .m07_axi_awvalid(m07_axi_awvalid),
-    .m07_axi_awready(m07_axi_awready),
-    .m07_axi_wdata(m07_axi_wdata),
-    .m07_axi_wstrb(m07_axi_wstrb),
-    .m07_axi_wlast(m07_axi_wlast),
-    .m07_axi_wuser(m07_axi_wuser),
-    .m07_axi_wvalid(m07_axi_wvalid),
-    .m07_axi_wready(m07_axi_wready),
-    .m07_axi_bid(m07_axi_bid),
-    .m07_axi_bresp(m07_axi_bresp),
-    .m07_axi_buser(m07_axi_buser),
-    .m07_axi_bvalid(m07_axi_bvalid),
-    .m07_axi_bready(m07_axi_bready),
-    .m07_axi_arid(m07_axi_arid),
-    .m07_axi_araddr(m07_axi_araddr),
-    .m07_axi_arlen(m07_axi_arlen),
-    .m07_axi_arsize(m07_axi_arsize),
-    .m07_axi_arburst(m07_axi_arburst),
-    .m07_axi_arlock(m07_axi_arlock),
-    .m07_axi_arcache(m07_axi_arcache),
-    .m07_axi_arprot(m07_axi_arprot),
-    .m07_axi_arqos(m07_axi_arqos),
-    .m07_axi_arregion(m07_axi_arregion),
-    .m07_axi_aruser(m07_axi_aruser),
-    .m07_axi_arvalid(m07_axi_arvalid),
-    .m07_axi_arready(m07_axi_arready),
-    .m07_axi_rid(m07_axi_rid),
-    .m07_axi_rdata(m07_axi_rdata),
-    .m07_axi_rresp(m07_axi_rresp),
-    .m07_axi_rlast(m07_axi_rlast),
-    .m07_axi_ruser(m07_axi_ruser),
-    .m07_axi_rvalid(m07_axi_rvalid),
-    .m07_axi_rready(m07_axi_rready),
+    .m07_axi_awid(u07_awid),
+    .m07_axi_awaddr(u07_awaddr),
+    .m07_axi_awlen(u07_awlen),
+    .m07_axi_awsize(u07_awsize),
+    .m07_axi_awburst(u07_awburst),
+    .m07_axi_awlock(u07_awlock),
+    .m07_axi_awcache(u07_awcache),
+    .m07_axi_awprot(u07_awprot),
+    .m07_axi_awqos(u07_awqos),
+    .m07_axi_awregion(u07_awregion),
+    .m07_axi_awuser(u07_awuser),
+    .m07_axi_awvalid(u07_awvalid),
+    .m07_axi_awready(u07_awready),
+    .m07_axi_wdata(u07_wdata),
+    .m07_axi_wstrb(u07_wstrb),
+    .m07_axi_wlast(u07_wlast),
+    .m07_axi_wuser(u07_wuser),
+    .m07_axi_wvalid(u07_wvalid),
+    .m07_axi_wready(u07_wready),
+    .m07_axi_bid(u07_bid),
+    .m07_axi_bresp(u07_bresp),
+    .m07_axi_buser(u07_buser),
+    .m07_axi_bvalid(u07_bvalid),
+    .m07_axi_bready(u07_bready),
+    .m07_axi_arid(u07_arid),
+    .m07_axi_araddr(u07_araddr),
+    .m07_axi_arlen(u07_arlen),
+    .m07_axi_arsize(u07_arsize),
+    .m07_axi_arburst(u07_arburst),
+    .m07_axi_arlock(u07_arlock),
+    .m07_axi_arcache(u07_arcache),
+    .m07_axi_arprot(u07_arprot),
+    .m07_axi_arqos(u07_arqos),
+    .m07_axi_arregion(u07_arregion),
+    .m07_axi_aruser(u07_aruser),
+    .m07_axi_arvalid(u07_arvalid),
+    .m07_axi_arready(u07_arready),
+    .m07_axi_rid(u07_rid),
+    .m07_axi_rdata(u07_rdata),
+    .m07_axi_rresp(u07_rresp),
+    .m07_axi_rlast(u07_rlast),
+    .m07_axi_ruser(u07_ruser),
+    .m07_axi_rvalid(u07_rvalid),
+    .m07_axi_rready(u07_rready),
 
     .m08_axi_awid(m08_axi_awid),
     .m08_axi_awaddr(m08_axi_awaddr),
@@ -2575,6 +2639,453 @@ axi_uart_top u_axi_uart (
     .read_interrupt_o (read_interrupt_o),
     .uart_rx_i        (uart_rx_i),
     .uart_tx_o        (uart_tx_o)
+);
+
+// ---------------------------------------------------------------------------
+// Timer Subsystem on M06 (0x4000_8000)
+// ---------------------------------------------------------------------------
+axi4_to_axil_lite #(
+    .DATA_WIDTH(DATA_WIDTH),
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .STRB_WIDTH(STRB_WIDTH),
+    .ID_WIDTH(ID_WIDTH),
+    .AWUSER_WIDTH(AWUSER_WIDTH),
+    .WUSER_WIDTH(WUSER_WIDTH),
+    .BUSER_WIDTH(BUSER_WIDTH),
+    .ARUSER_WIDTH(ARUSER_WIDTH),
+    .RUSER_WIDTH(RUSER_WIDTH)
+) u_bridge_timer (
+    .clk(clk),
+    .rst_n(uart_aresetn),
+
+    .s_axi_awid(u06_awid),
+    .s_axi_awaddr(u06_awaddr),
+    .s_axi_awlen(u06_awlen),
+    .s_axi_awsize(u06_awsize),
+    .s_axi_awburst(u06_awburst),
+    .s_axi_awlock(u06_awlock),
+    .s_axi_awcache(u06_awcache),
+    .s_axi_awprot(u06_awprot),
+    .s_axi_awqos(u06_awqos),
+    .s_axi_awregion(u06_awregion),
+    .s_axi_awuser(u06_awuser),
+    .s_axi_awvalid(u06_awvalid),
+    .s_axi_awready(u06_awready),
+
+    .s_axi_wdata(u06_wdata),
+    .s_axi_wstrb(u06_wstrb),
+    .s_axi_wlast(u06_wlast),
+    .s_axi_wuser(u06_wuser),
+    .s_axi_wvalid(u06_wvalid),
+    .s_axi_wready(u06_wready),
+
+    .s_axi_bid(u06_bid),
+    .s_axi_bresp(u06_bresp),
+    .s_axi_buser(u06_buser),
+    .s_axi_bvalid(u06_bvalid),
+    .s_axi_bready(u06_bready),
+
+    .s_axi_arid(u06_arid),
+    .s_axi_araddr(u06_araddr),
+    .s_axi_arlen(u06_arlen),
+    .s_axi_arsize(u06_arsize),
+    .s_axi_arburst(u06_arburst),
+    .s_axi_arlock(u06_arlock),
+    .s_axi_arcache(u06_arcache),
+    .s_axi_arprot(u06_arprot),
+    .s_axi_arqos(u06_arqos),
+    .s_axi_arregion(u06_arregion),
+    .s_axi_aruser(u06_aruser),
+    .s_axi_arvalid(u06_arvalid),
+    .s_axi_arready(u06_arready),
+
+    .s_axi_rid(u06_rid),
+    .s_axi_rdata(u06_rdata),
+    .s_axi_rresp(u06_rresp),
+    .s_axi_rlast(u06_rlast),
+    .s_axi_ruser(u06_ruser),
+    .s_axi_rvalid(u06_rvalid),
+    .s_axi_rready(u06_rready),
+
+    .m_axil_awaddr(timer_axil_awaddr),
+    .m_axil_awvalid(timer_axil_awvalid),
+    .m_axil_awready(timer_axil_awready),
+    .m_axil_wdata(timer_axil_wdata),
+    .m_axil_wstrb(timer_axil_wstrb),
+    .m_axil_wvalid(timer_axil_wvalid),
+    .m_axil_wready(timer_axil_wready),
+    .m_axil_bresp(timer_axil_bresp),
+    .m_axil_bvalid(timer_axil_bvalid),
+    .m_axil_bready(timer_axil_bready),
+    .m_axil_araddr(timer_axil_araddr),
+    .m_axil_arvalid(timer_axil_arvalid),
+    .m_axil_arready(timer_axil_arready),
+    .m_axil_rdata(timer_axil_rdata),
+    .m_axil_rresp(timer_axil_rresp),
+    .m_axil_rvalid(timer_axil_rvalid),
+    .m_axil_rready(timer_axil_rready)
+);
+
+timer #(
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH)
+) u_timer (
+    .clk(clk),
+    .rst_n(uart_aresetn),
+
+    .s_axi_awaddr(timer_axil_awaddr),
+    .s_axi_awvalid(timer_axil_awvalid),
+    .s_axi_awready(timer_axil_awready),
+    .s_axi_wdata(timer_axil_wdata),
+    .s_axi_wstrb(timer_axil_wstrb),
+    .s_axi_wvalid(timer_axil_wvalid),
+    .s_axi_wready(timer_axil_wready),
+    .s_axi_bresp(timer_axil_bresp),
+    .s_axi_bvalid(timer_axil_bvalid),
+    .s_axi_bready(timer_axil_bready),
+    .s_axi_araddr(timer_axil_araddr),
+    .s_axi_arvalid(timer_axil_arvalid),
+    .s_axi_arready(timer_axil_arready),
+    .s_axi_rdata(timer_axil_rdata),
+    .s_axi_rresp(timer_axil_rresp),
+    .s_axi_rvalid(timer_axil_rvalid),
+    .s_axi_rready(timer_axil_rready),
+
+    .sample_tick(sample_tick),
+    .irq_timer(irq_timer)
+);
+
+// ---------------------------------------------------------------------------
+// GPIO Subsystem on M07 (0x4000_A000)
+// ---------------------------------------------------------------------------
+axi4_to_axil_lite #(
+    .DATA_WIDTH(DATA_WIDTH),
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .STRB_WIDTH(STRB_WIDTH),
+    .ID_WIDTH(ID_WIDTH),
+    .AWUSER_WIDTH(AWUSER_WIDTH),
+    .WUSER_WIDTH(WUSER_WIDTH),
+    .BUSER_WIDTH(BUSER_WIDTH),
+    .ARUSER_WIDTH(ARUSER_WIDTH),
+    .RUSER_WIDTH(RUSER_WIDTH)
+) u_bridge_gpio (
+    .clk(clk),
+    .rst_n(uart_aresetn),
+
+    .s_axi_awid(u07_awid),
+    .s_axi_awaddr(u07_awaddr),
+    .s_axi_awlen(u07_awlen),
+    .s_axi_awsize(u07_awsize),
+    .s_axi_awburst(u07_awburst),
+    .s_axi_awlock(u07_awlock),
+    .s_axi_awcache(u07_awcache),
+    .s_axi_awprot(u07_awprot),
+    .s_axi_awqos(u07_awqos),
+    .s_axi_awregion(u07_awregion),
+    .s_axi_awuser(u07_awuser),
+    .s_axi_awvalid(u07_awvalid),
+    .s_axi_awready(u07_awready),
+
+    .s_axi_wdata(u07_wdata),
+    .s_axi_wstrb(u07_wstrb),
+    .s_axi_wlast(u07_wlast),
+    .s_axi_wuser(u07_wuser),
+    .s_axi_wvalid(u07_wvalid),
+    .s_axi_wready(u07_wready),
+
+    .s_axi_bid(u07_bid),
+    .s_axi_bresp(u07_bresp),
+    .s_axi_buser(u07_buser),
+    .s_axi_bvalid(u07_bvalid),
+    .s_axi_bready(u07_bready),
+
+    .s_axi_arid(u07_arid),
+    .s_axi_araddr(u07_araddr),
+    .s_axi_arlen(u07_arlen),
+    .s_axi_arsize(u07_arsize),
+    .s_axi_arburst(u07_arburst),
+    .s_axi_arlock(u07_arlock),
+    .s_axi_arcache(u07_arcache),
+    .s_axi_arprot(u07_arprot),
+    .s_axi_arqos(u07_arqos),
+    .s_axi_arregion(u07_arregion),
+    .s_axi_aruser(u07_aruser),
+    .s_axi_arvalid(u07_arvalid),
+    .s_axi_arready(u07_arready),
+
+    .s_axi_rid(u07_rid),
+    .s_axi_rdata(u07_rdata),
+    .s_axi_rresp(u07_rresp),
+    .s_axi_rlast(u07_rlast),
+    .s_axi_ruser(u07_ruser),
+    .s_axi_rvalid(u07_rvalid),
+    .s_axi_rready(u07_rready),
+
+    .m_axil_awaddr(gpio_axil_awaddr),
+    .m_axil_awvalid(gpio_axil_awvalid),
+    .m_axil_awready(gpio_axil_awready),
+    .m_axil_wdata(gpio_axil_wdata),
+    .m_axil_wstrb(gpio_axil_wstrb),
+    .m_axil_wvalid(gpio_axil_wvalid),
+    .m_axil_wready(gpio_axil_wready),
+    .m_axil_bresp(gpio_axil_bresp),
+    .m_axil_bvalid(gpio_axil_bvalid),
+    .m_axil_bready(gpio_axil_bready),
+    .m_axil_araddr(gpio_axil_araddr),
+    .m_axil_arvalid(gpio_axil_arvalid),
+    .m_axil_arready(gpio_axil_arready),
+    .m_axil_rdata(gpio_axil_rdata),
+    .m_axil_rresp(gpio_axil_rresp),
+    .m_axil_rvalid(gpio_axil_rvalid),
+    .m_axil_rready(gpio_axil_rready)
+);
+
+gpio #(
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH)
+) u_gpio (
+    .clk(clk),
+    .rst_n(uart_aresetn),
+
+    .gpio_in(gpio_in),
+    .gpio_out(gpio_out),
+
+    .s_axi_awaddr(gpio_axil_awaddr),
+    .s_axi_awvalid(gpio_axil_awvalid),
+    .s_axi_awready(gpio_axil_awready),
+    .s_axi_wdata(gpio_axil_wdata),
+    .s_axi_wstrb(gpio_axil_wstrb),
+    .s_axi_wvalid(gpio_axil_wvalid),
+    .s_axi_wready(gpio_axil_wready),
+    .s_axi_bresp(gpio_axil_bresp),
+    .s_axi_bvalid(gpio_axil_bvalid),
+    .s_axi_bready(gpio_axil_bready),
+    .s_axi_araddr(gpio_axil_araddr),
+    .s_axi_arvalid(gpio_axil_arvalid),
+    .s_axi_arready(gpio_axil_arready),
+    .s_axi_rdata(gpio_axil_rdata),
+    .s_axi_rresp(gpio_axil_rresp),
+    .s_axi_rvalid(gpio_axil_rvalid),
+    .s_axi_rready(gpio_axil_rready),
+
+    .irq_gpio(irq_gpio)
+);
+
+// ---------------------------------------------------------------------------
+// PWM Subsystem on M03 (0x4000_2000)
+// ---------------------------------------------------------------------------
+wire [ADDR_WIDTH-1:0]      pwm_axil_awaddr, pwm_axil_araddr;
+wire [DATA_WIDTH-1:0]      pwm_axil_wdata,  pwm_axil_rdata;
+wire [STRB_WIDTH-1:0]      pwm_axil_wstrb;
+wire [1:0]                 pwm_axil_bresp,  pwm_axil_rresp;
+wire                       pwm_axil_awvalid, pwm_axil_awready, pwm_axil_wvalid, pwm_axil_wready;
+wire                       pwm_axil_bvalid,  pwm_axil_bready,  pwm_axil_arvalid, pwm_axil_arready;
+wire                       pwm_axil_rvalid,  pwm_axil_rready;
+
+axi4_to_axil_lite #(
+    .DATA_WIDTH(DATA_WIDTH),
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .STRB_WIDTH(STRB_WIDTH),
+    .ID_WIDTH(ID_WIDTH),
+    .AWUSER_WIDTH(AWUSER_WIDTH),
+    .WUSER_WIDTH(WUSER_WIDTH),
+    .BUSER_WIDTH(BUSER_WIDTH),
+    .ARUSER_WIDTH(ARUSER_WIDTH),
+    .RUSER_WIDTH(RUSER_WIDTH)
+) u_bridge_pwm (
+    .clk(clk),
+    .rst_n(uart_aresetn),
+
+    .s_axi_awid(u03_awid),
+    .s_axi_awaddr(u03_awaddr),
+    .s_axi_awlen(u03_awlen),
+    .s_axi_awsize(u03_awsize),
+    .s_axi_awburst(u03_awburst),
+    .s_axi_awlock(u03_awlock),
+    .s_axi_awcache(u03_awcache),
+    .s_axi_awprot(u03_awprot),
+    .s_axi_awqos(u03_awqos),
+    .s_axi_awregion(u03_awregion),
+    .s_axi_awuser(u03_awuser),
+    .s_axi_awvalid(u03_awvalid),
+    .s_axi_awready(u03_awready),
+
+    .s_axi_wdata(u03_wdata),
+    .s_axi_wstrb(u03_wstrb),
+    .s_axi_wlast(u03_wlast),
+    .s_axi_wuser(u03_wuser),
+    .s_axi_wvalid(u03_wvalid),
+    .s_axi_wready(u03_wready),
+
+    .s_axi_bid(u03_bid),
+    .s_axi_bresp(u03_bresp),
+    .s_axi_buser(u03_buser),
+    .s_axi_bvalid(u03_bvalid),
+    .s_axi_bready(u03_bready),
+
+    .s_axi_arid(u03_arid),
+    .s_axi_araddr(u03_araddr),
+    .s_axi_arlen(u03_arlen),
+    .s_axi_arsize(u03_arsize),
+    .s_axi_arburst(u03_arburst),
+    .s_axi_arlock(u03_arlock),
+    .s_axi_arcache(u03_arcache),
+    .s_axi_arprot(u03_arprot),
+    .s_axi_arqos(u03_arqos),
+    .s_axi_arregion(u03_arregion),
+    .s_axi_aruser(u03_aruser),
+    .s_axi_arvalid(u03_arvalid),
+    .s_axi_arready(u03_arready),
+
+    .s_axi_rid(u03_rid),
+    .s_axi_rdata(u03_rdata),
+    .s_axi_rresp(u03_rresp),
+    .s_axi_rlast(u03_rlast),
+    .s_axi_ruser(u03_ruser),
+    .s_axi_rvalid(u03_rvalid),
+    .s_axi_rready(u03_rready),
+
+    .m_axil_awaddr(pwm_axil_awaddr),
+    .m_axil_awvalid(pwm_axil_awvalid),
+    .m_axil_awready(pwm_axil_awready),
+    .m_axil_wdata(pwm_axil_wdata),
+    .m_axil_wstrb(pwm_axil_wstrb),
+    .m_axil_wvalid(pwm_axil_wvalid),
+    .m_axil_wready(pwm_axil_wready),
+    .m_axil_bresp(pwm_axil_bresp),
+    .m_axil_bvalid(pwm_axil_bvalid),
+    .m_axil_bready(pwm_axil_bready),
+    .m_axil_araddr(pwm_axil_araddr),
+    .m_axil_arvalid(pwm_axil_arvalid),
+    .m_axil_arready(pwm_axil_arready),
+    .m_axil_rdata(pwm_axil_rdata),
+    .m_axil_rresp(pwm_axil_rresp),
+    .m_axil_rvalid(pwm_axil_rvalid),
+    .m_axil_rready(pwm_axil_rready)
+);
+
+pwm #(
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH)
+) u_pwm (
+    .clk(clk),
+    .rst_n(uart_aresetn),
+
+    .pwm_out(pwm_out),
+    .irq_pwm(irq_pwm),
+
+    .s_axi_awaddr(pwm_axil_awaddr),
+    .s_axi_awvalid(pwm_axil_awvalid),
+    .s_axi_awready(pwm_axil_awready),
+    .s_axi_wdata(pwm_axil_wdata),
+    .s_axi_wstrb(pwm_axil_wstrb),
+    .s_axi_wvalid(pwm_axil_wvalid),
+    .s_axi_wready(pwm_axil_wready),
+    .s_axi_bresp(pwm_axil_bresp),
+    .s_axi_bvalid(pwm_axil_bvalid),
+    .s_axi_bready(pwm_axil_bready),
+    .s_axi_araddr(pwm_axil_araddr),
+    .s_axi_arvalid(pwm_axil_arvalid),
+    .s_axi_arready(pwm_axil_arready),
+    .s_axi_rdata(pwm_axil_rdata),
+    .s_axi_rresp(pwm_axil_rresp),
+    .s_axi_rvalid(pwm_axil_rvalid),
+    .s_axi_rready(pwm_axil_rready)
+);
+
+// ---------------------------------------------------------------------------
+// I2C Subsystem on M02 (0x4000_0000)
+// ---------------------------------------------------------------------------
+wire [2:0]  i2c_wb_adr;
+wire [7:0]  i2c_wb_dat_m2s;
+wire [7:0]  i2c_wb_dat_s2m;
+wire        i2c_wb_we;
+wire        i2c_wb_stb;
+wire        i2c_wb_cyc;
+wire        i2c_wb_ack;
+
+axi_to_wb_bridge #(
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH),
+    .ID_WIDTH(ID_WIDTH)
+) u_bridge_i2c (
+    .clk(clk),
+    .rst(rst),
+
+    .s_axi_awid(u02_awid),
+    .s_axi_awaddr(u02_awaddr),
+    .s_axi_awlen(u02_awlen),
+    .s_axi_awsize(u02_awsize),
+    .s_axi_awburst(u02_awburst),
+    .s_axi_awlock(u02_awlock),
+    .s_axi_awcache(u02_awcache),
+    .s_axi_awprot(u02_awprot),
+    .s_axi_awqos(u02_awqos),
+    .s_axi_awregion(u02_awregion),
+    .s_axi_awvalid(u02_awvalid),
+    .s_axi_awready(u02_awready),
+
+    .s_axi_wdata(u02_wdata),
+    .s_axi_wstrb(u02_wstrb),
+    .s_axi_wlast(u02_wlast),
+    .s_axi_wvalid(u02_wvalid),
+    .s_axi_wready(u02_wready),
+
+    .s_axi_bid(u02_bid),
+    .s_axi_bresp(u02_bresp),
+    .s_axi_bvalid(u02_bvalid),
+    .s_axi_bready(u02_bready),
+
+    .s_axi_arid(u02_arid),
+    .s_axi_araddr(u02_araddr),
+    .s_axi_arlen(u02_arlen),
+    .s_axi_arsize(u02_arsize),
+    .s_axi_arburst(u02_arburst),
+    .s_axi_arlock(u02_arlock),
+    .s_axi_arcache(u02_arcache),
+    .s_axi_arprot(u02_arprot),
+    .s_axi_arqos(u02_arqos),
+    .s_axi_arregion(u02_arregion),
+    .s_axi_arvalid(u02_arvalid),
+    .s_axi_arready(u02_arready),
+
+    .s_axi_rid(u02_rid),
+    .s_axi_rdata(u02_rdata),
+    .s_axi_rresp(u02_rresp),
+    .s_axi_rlast(u02_rlast),
+    .s_axi_rvalid(u02_rvalid),
+    .s_axi_rready(u02_rready),
+
+    .wb_adr_o(i2c_wb_adr),
+    .wb_dat_o(i2c_wb_dat_m2s),
+    .wb_dat_i(i2c_wb_dat_s2m),
+    .wb_we_o(i2c_wb_we),
+    .wb_stb_o(i2c_wb_stb),
+    .wb_cyc_o(i2c_wb_cyc),
+    .wb_ack_i(i2c_wb_ack)
+);
+
+i2c_master_top #(
+    .ARST_LVL(1'b0)
+) u_i2c (
+    .wb_clk_i(clk),
+    .wb_rst_i(rst),
+    .arst_i(1'b1), // inactive async reset when ARST_LVL=0
+    .wb_adr_i(i2c_wb_adr),
+    .wb_dat_i(i2c_wb_dat_m2s),
+    .wb_dat_o(i2c_wb_dat_s2m),
+    .wb_we_i(i2c_wb_we),
+    .wb_stb_i(i2c_wb_stb),
+    .wb_cyc_i(i2c_wb_cyc),
+    .wb_ack_o(i2c_wb_ack),
+    .wb_inta_o(irq_i2c),
+
+    .scl_pad_i(scl_pad_i),
+    .scl_pad_o(scl_pad_o),
+    .scl_padoen_o(scl_padoen_o),
+    .sda_pad_i(sda_pad_i),
+    .sda_pad_o(sda_pad_o),
+    .sda_padoen_o(sda_padoen_o)
 );
 
 endmodule
