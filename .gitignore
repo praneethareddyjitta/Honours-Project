@@ -18,3 +18,8 @@ verdi_config_file
 sw/*.o
 sw/*.dump
 sw/*.map
+
+# Swap and cache files
+*.swp
+__pycache__/
+*.pyc

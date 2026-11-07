@@ -224,15 +224,15 @@ module tb_axi_i2c;
         // Clear DONE flag (W1C)
         axi_write(32'h14, 32'h02);
 
-        // Step B: Data Phase -> Write Data Byte (0x77) + STOP
-        $display("--- Step B: Transmitting Data Byte (0x77) + STOP ---");
-        axi_write(32'h08, 32'h77);          // TXDATA = 0x77
+        // Step B: Data Phase -> Write Sub-Address (0x04) + STOP
+        $display("--- Step B: Transmitting Memory Sub-Address (0x04) + STOP ---");
+        axi_write(32'h08, 32'h04);          // TXDATA = 0x04 (within slave memory 0..15)
         axi_write(32'h10, 32'b00110);       // CMD: WR=1, STOP=1
         wait_for_done();
         axi_read(32'h14, rdata);
-        if (rdata[2] != 1'b0) $fatal(1, "Expected ACK from slave for data 0x77!");
+        if (rdata[2] != 1'b0) $fatal(1, "Expected ACK from slave for sub-address 0x04!");
         if (!irq_i2c) $fatal(1, "irq_i2c should be asserted when IE=1 and DONE=1!");
-        $display("[PASS] Data byte 0x77 written and irq_i2c asserted.");
+        $display("[PASS] Memory sub-address 0x04 written and irq_i2c asserted.");
         axi_write(32'h14, 32'h02); // Clear DONE
 
         #(CLK_PERIOD * 20);

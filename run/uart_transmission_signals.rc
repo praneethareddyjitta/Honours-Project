@@ -1,0 +1,60 @@
+Magic 271485
+Revision Verdi_U-2023.03-SP1
+
+; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
+viewPort 0 25 1600 850 420 200
+
+; File list:
+openDirFile -d / "" "/home/student/Documents/1602-23-735-163/Honours-Project-main/run/dump_uart_tx.fsdb"
+
+; signal spacing:
+signalSpacing 5
+windowTimeUnit 1us
+
+top 0
+curSTATUS ByChange
+
+addGroup "1. System (Clock & Reset)"
+activeDirFile "" "/home/student/Documents/1602-23-735-163/Honours-Project-main/run/dump_uart_tx.fsdb"
+addSignal -h 15 /soc_tb_top/clk
+addSignal -h 15 -holdScope rst_n
+
+addGroup "2. DUT UART Physical Pins"
+addSignal -h 18 -color ID_YELLOW5 /soc_tb_top/dut/uart_tx
+addSignal -h 15 /soc_tb_top/dut/uart_rx
+addSignal -h 15 /soc_tb_top/dut/uart_irq
+
+addGroup "3. UART Serial Interface (soc_uart_if)"
+addSignal -h 18 -color ID_ORANGE5 /soc_tb_top/uart_vif/uart_tx
+addSignal -h 15 /soc_tb_top/uart_vif/uart_rx
+addSignal -h 15 /soc_tb_top/uart_vif/uart_irq
+
+addGroup "4. UVM VIP Monitor (Sampled & Decoded TX)"
+addSignal -h 18 -color ID_GREEN5 /soc_tb_top/uart_vif/mon_uart_tx
+addSignal -h 15 /soc_tb_top/uart_vif/mon_tx_active
+addSignal -h 15 -color ID_PURPLE5 /soc_tb_top/uart_vif/mon_sample_strobe
+addSignal -h 15 -DEC /soc_tb_top/uart_vif/mon_bit_idx[3:0]
+addSignal -h 15 -HEX -color ID_GREEN5 /soc_tb_top/uart_vif/mon_shift_reg[7:0]
+addSignal -h 15 /soc_tb_top/uart_vif/mon_byte_valid
+addSignal -h 18 -HEX -color ID_GREEN5 /soc_tb_top/uart_vif/mon_decoded_byte[7:0]
+
+addGroup "5. UART Core Internal TX & FIFO"
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/tx_fifo_push_int
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/pull_controller_tx_fifo
+addSignal -h 15 -HEX -color ID_CYAN5 /soc_tb_top/dut/u_axi_soc/u_axi_uart/tx_fifo_data_in_int[7:0]
+addSignal -h 15 -HEX -color ID_CYAN5 /soc_tb_top/dut/u_axi_soc/u_axi_uart/data_tx_fifo_controller[7:0]
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/tx_fifo_full_int
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/available_write_space_int
+addSignal -h 15 -HEX /soc_tb_top/dut/u_axi_soc/u_axi_uart/uart_controller_inst/uart_transmitter_inst/state[4:0]
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/uart_controller_inst/uart_transmitter_inst/busy
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/uart_controller_inst/uart_transmitter_inst/tx_ready
+addSignal -h 15 -HEX -color ID_CYAN5 /soc_tb_top/dut/u_axi_soc/u_axi_uart/uart_controller_inst/uart_transmitter_inst/tx_data_int[7:0]
+addSignal -h 15 -DEC /soc_tb_top/dut/u_axi_soc/u_axi_uart/uart_controller_inst/uart_transmitter_inst/bitcount_int[3:0]
+
+addGroup "6. Processor AXI Writes to UART"
+addSignal -h 15 -HEX /soc_tb_top/dut/lsu_axi_awaddr[31:0]
+addSignal -h 15 -HEX -color ID_CYAN5 /soc_tb_top/dut/lsu_axi_wdata[63:0]
+addSignal -h 15 -HEX /soc_tb_top/dut/u_axi_soc/u_axi_uart/axi_awaddr_i[4:0]
+addSignal -h 15 -HEX -color ID_CYAN5 /soc_tb_top/dut/u_axi_soc/u_axi_uart/axi_wdata_i[31:0]
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/axi_wvalid_i
+addSignal -h 15 /soc_tb_top/dut/u_axi_soc/u_axi_uart/axi_wready_o
